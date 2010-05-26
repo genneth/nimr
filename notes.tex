@@ -1,0 +1,67 @@
+\documentclass[10pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose}
+\pagestyle{plain}
+\usepackage{babel}
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage[unicode=true, pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+
+\usepackage{fouriernc}
+\usepackage{siunitx}
+\usepackage{microtype}
+\usepackage{nicefrac}
+
+\begin{document}
+
+%\author{Gen Zhang}
+\title{Notes on spinal chord development and structure}
+
+\maketitle
+
+Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer.
+
+TODO: PICTURE OF ANATOMY
+
+Obvious questions include:
+
+\begin{itemize}
+\item Are the cells in the pseudo-stratified layer heterogeneous? In particular, does there exist cells committed to terminal differentiation but have not yet migrated? C.f. Ki10+ cells in epithelium.
+\item What is the distribution of cell cycle times? Are there good reasons to have stochastic division (robust against fluctuations, etc.)?
+\end{itemize}
+
+TODO: PICTURE OF SLICE
+
+Preliminary measurements have been made of both sections in the transverse (AB/DV) plane, and flat mounts (AP/DV). In the transverse sections, the \textbf{absolute domain size} along both AB, $l_d$, and DV, $t_d$, are accessible; also, it is possible to measure the \textbf{total number of progenitors}, $p_d$, and \textbf{total number of mature neurons}, $n_d$. Finally, the \textbf{transverse cross-section area}, $a_d$, is measured. These geometric properties may be combined $$p_d = \frac{D}{z} \frac{t_d l_d}{a_d}$$ where $D$ is the thickness of section (typically \SI{6}{\mu m}), and $z$ is the depth (along AP) of a typical cell (which may be assumed to be the same as the width (DV), but is still unknown).
+
+TODO: TABLE OF $z$ --- distribution is a bit wide
+
+In the flat mounts (AP/DV), it is possible to measure \textbf{mitotic index} (PH3 staining), $m_d$, as the number of cells per unit area. It is observed that mitosis only occurs within a layer ~\SI{5}{\mu m} of the apical surface, i.e. monolayer. If only progenitors exist in the pseudo-stratified layer, the division rate is then $$\lambda_d = A \frac{m_d}{p_d/D\,l_d},$$ where the unknown $A$ should be something to do with duration of mitosis, and be independent of cycle times; i.e. it is a \emph{bona fide} constant.
+
+A model of the overall process might then be (TODO: DIAGRAM)
+\begin{align*}
+P_d &\overset{\lambda_d}{\longrightarrow} P_d + P_d \\
+P_d &\overset{\Gamma_d}{\longrightarrow} M_d
+\end{align*}
+where $P_d$ denotes a progenitor in domain $d$ and $M_d$ the mature neurons. The rates are intended to represent averages. The corresponding rate equations are therefore
+\begin{align*}
+\dot{p}_d &= (\lambda_d - \Gamma_d) p_d  \\
+\dot{n}_d &= \Gamma_d p_d
+\end{align*}
+The division rate may then be extracted again via approximating the time derivatives by discrete derivatives, i.e. $\dot{p}_d \simeq \Delta n / \Delta t$: $$ \lambda_d \simeq \Gamma_d + \frac{1}{p_d}\frac{\Delta p_d}{\Delta t} \simeq \frac{1}{p_d} \frac{\left(\Delta p_d + \Delta n_d \right)}{\Delta t}.$$
+
+TODO: COMPARISON PLOTS --- not quite exactly right, but actually reasonably consistent
+
+An EdU incorporation experiment has been performed, where EdU was administered for 24 hours, once between stages 17--21, and once 21--25. In both cases, EdU was incorporated in 100\% of cells in the pseudo-stratified layer. This means that all cells committed to differentiation at the start of the course have migrated out of the layer within 24 hours.
+
+Potential resolution: look at increase of mature neurons during that 24 hour period. The EdU+ ones will have had to come from progenitors which underwent mitosis during those 24 hours; the EdU negative ones had to have been termininally differentiated already.
+
+\end{document}
