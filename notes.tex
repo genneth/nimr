@@ -23,45 +23,55 @@
 \begin{document}
 
 %\author{Gen Zhang}
-\title{Notes on spinal chord development and structure}
+\title{Notes on spinal chord structure and development}
 
 \maketitle
 
-Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer.
+Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer. Note that there is no clear physiologically defined boundary between the progenitor domains and the mature neurons, e.g. such as the stratified layers in epidermis/oesophagus or a separating membrane. Although there is a slight morphological difference in that progenitors are elongated and post-mitotic cells are more round, having detached from the apical end, the main differentiator is the progenitor marker []; there is also the mature neuron marker [], but it takes some time to build up, and it is found to not be particularly tight; as such, we use the [progenitor marker] as ground truth.
 
-TODO: PICTURE OF ANATOMY
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=4in]{spinal-chord-anatomy.png}
+	\end{center}
+	\label{fig:anatomy}
+\end{figure}
 
-Obvious questions include:
+In 24 hour EdU incorporation studies, it is observed that the entire progenitor domain is EdU+, as well as some mature neurons. From the number of neurons produced which are EdU- we can infer the number of post-mitotic cells in the progenitor domains at the start of the 24 hour period. A rough count of a Pax7 domain showed that around 30 mature neurons are produced during this period, of which 10 are EdU-; there are around 200 progenitors in the domain to begin with, thus only around $5\%$ of the cells are post-mitotic. However, it is observed that $100\%$ of cells in the progenitor domains express [progenitor marker], implying that the [progenitor marker] has a moderate decay period. Further, it is observed (based only on two observations) that post-mitosis migration takes around 7 hours, with very little variance; it is also thought that division rates are around 20--30 hours. This is sufficiently long that for accurate statistics, the time spent migrating should not be ignored.
 
-\begin{itemize}
-\item Are the cells in the pseudo-stratified layer heterogeneous? In particular, does there exist cells committed to terminal differentiation but have not yet migrated? C.f. Ki10+ cells in epithelium.
-\item What is the distribution of cell cycle times? Are there good reasons to have stochastic division (robust against fluctuations, etc.)?
-\end{itemize}
+As such, the following model is proposed:
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=4.4in]{division-process-A.png}
+	\end{center}
+	\label{fig:division-process-A}
+\end{figure}
+
+For a first stab at modelling, it is probably sufficient to treat $\lambda(t)$ as exponential, i.e.\ perfectly stochastic, and $\gamma(t)$ as a $\delta$-distribution, i.e.\ perfectly synchronous.
+
+Notice that if it is the case that the daughters of a progenitor independently make a decision about differentiation, then we expect the relation: $\sqrt{r_2 (t)} = 1 - \sqrt{r_1(t)}$.
+
+At the moment, we have access to various data relating to sections in the transverse (AB/DV) plane, which are around $s = \SI{6}{\micro\metre}$ in thickness. From these sections, it is possible to measure the \textbf{cell density per unit area} $1/a_d$ in the progenitor domains, and the \textbf{number of progenitors and neurons}, $p_d$ and $n_d$, respectively. The domains are also roughly rectangular, and to a certain extent we can assign some \textbf{absolute dimensions} $[DV]_d$ and $[AB]_d$; however, the actual area of the progenitor domains are more accurately measured by $p a$, as opposed to $[DV][AB]$. The absolute dimensions will have more direct impact on signalling.
 
 TODO: PICTURE OF SLICE
 
-Preliminary measurements have been made of both sections in the transverse (AB/DV) plane, and flat mounts (AP/DV). In the transverse sections, the \textbf{absolute domain size} along both AB, $l_d$, and DV, $t_d$, are accessible; also, it is possible to measure the \textbf{total number of progenitors}, $p_d$, and \textbf{total number of mature neurons}, $n_d$. Finally, the \textbf{transverse cross-section area}, $a_d$, is measured. These geometric properties may be combined $$p_d = \frac{D}{z} \frac{t_d l_d}{a_d}$$ where $D$ is the thickness of section (typically \SI{6}{\mu m}), and $z$ is the depth (along AP) of a typical cell (which may be assumed to be the same as the width (DV), but is still unknown).
+We made/are in process of making consistency checks to the effect that these two areas should not diverge too dramatically. We calculate the \textbf{cell depth} $b$ (as measured in the AP direction) by $$b_d = \frac{[AB]_d[DV]_d s_d}{p_d a_d}.$$
 
-TODO: TABLE OF $z$ --- distribution is a bit wide
+TODO: DISTRIBUTION OF $b_d(t)$
 
-In the flat mounts (AP/DV), it is possible to measure \textbf{mitotic index} (PH3 staining), $m_d$, as the number of cells per unit area. It is observed that mitosis only occurs within a layer ~\SI{5}{\mu m} of the apical surface, i.e. monolayer. If only progenitors exist in the pseudo-stratified layer, the division rate is then $$\lambda_d = A \frac{m_d}{p_d/D\,l_d},$$ where the unknown $A$ should be something to do with duration of mitosis, and be independent of cycle times; i.e. it is a \emph{bona fide} constant.
+In flat mounts, i.e.\ in the AP/DV plane, it is possible to measure the \textbf{mitotic index} as the number of PH3+ cells per unit area $m_d$. If PH3 only stains for a period of time $\tau_\textrm{mitosis}$, we may calculate the division rate as $$\lambda_d = \frac{\rho_d}{\tau_\textrm{mitosis}}\frac{m_d s [DV]_d}{p_d},$$ where $\rho_d$ is the proportion of progenitor cells in domain $d$, e.g.\ from the preliminary data, $\rho_d \simeq 1$. In practice, we do not know $\tau_\textrm{mitosis}$, though it is should be a constant of time and space; however, it is conceivable that $\rho_d$ may change through changes in $\lambda$, $\gamma$, $r_1$ or $r_2$ (in fact, may be quite generally a functional on their values for all previous times). Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{30}{\minute}$:
 
-A model of the overall process might then be (TODO: DIAGRAM)
-\begin{align*}
-P_d &\overset{\lambda_d}{\longrightarrow} P_d + P_d \\
-P_d &\overset{\Gamma_d}{\longrightarrow} M_d
-\end{align*}
-where $P_d$ denotes a progenitor in domain $d$ and $M_d$ the mature neurons. The rates are intended to represent averages. The corresponding rate equations are therefore
-\begin{align*}
-\dot{p}_d &= (\lambda_d - \Gamma_d) p_d  \\
-\dot{n}_d &= \Gamma_d p_d
-\end{align*}
-The division rate may then be extracted again via approximating the time derivatives by discrete derivatives, i.e. $\dot{p}_d \simeq \Delta n / \Delta t$: $$ \lambda_d \simeq \Gamma_d + \frac{1}{p_d}\frac{\Delta p_d}{\Delta t} \simeq \frac{1}{p_d} \frac{\left(\Delta p_d + \Delta n_d \right)}{\Delta t}.$$
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=4in]{consistency-mitotic-index.png}
+	\end{center}
+	%\label{fig:mitotic-index}
+	\caption{TODO: intermediate and Pax7 progenitor counts are inaccurate; better numbers are being pursued. Better colours, to match the usual staining.}
+\end{figure}
 
-TODO: COMPARISON PLOTS --- not quite exactly right, but actually reasonably consistent
 
-An EdU incorporation experiment has been performed, where EdU was administered for 24 hours, once between stages 17--21, and once 21--25. In both cases, EdU was incorporated in 100\% of cells in the pseudo-stratified layer. This means that all cells committed to differentiation at the start of the course have migrated out of the layer within 24 hours.
+Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{15}{\minute}$ and $\rho_d = 1$ we find that a cell division time $1/\lambda_d \simeq \SI{25}{\hour}$, at least before $t \le \SI{75}{\hour}$. There is, however, a definite drop afterwards. Could this be due to a changing $\rho_d$?
 
-Potential resolution: look at increase of mature neurons during that 24 hour period. The EdU+ ones will have had to come from progenitors which underwent mitosis during those 24 hours; the EdU negative ones had to have been termininally differentiated already.
+To come: clonal fate analysis, error bars on mitotic index.
 
 \end{document}
