@@ -33,7 +33,7 @@ Spinal cord forms a pseudo-stratified tissue in which cells are organised in dom
 	\begin{center}
 		\includegraphics[width=4in]{spinal-chord-anatomy.png}
 	\end{center}
-	\label{fig:anatomy}
+	%\label{fig:anatomy}
 \end{figure}
 
 In 24 hour EdU incorporation studies, it is observed that the entire progenitor domain is EdU+, as well as some mature neurons. From the number of neurons produced which are EdU- we can infer the number of post-mitotic cells in the progenitor domains at the start of the 24 hour period. A rough count of a Pax7 domain showed that around 30 mature neurons are produced during this period, of which 10 are EdU-; there are around 200 progenitors in the domain to begin with, thus only around $5\%$ of the cells are post-mitotic. However, it is observed that $100\%$ of cells in the progenitor domains express [progenitor marker], implying that the [progenitor marker] has a moderate decay period. Further, it is observed (based only on two observations) that post-mitosis migration takes around 7 hours, with very little variance; it is also thought that division rates are around 20--30 hours. This is sufficiently long that for accurate statistics, the time spent migrating should not be ignored.
@@ -44,7 +44,7 @@ As such, the following model is proposed:
 	\begin{center}
 		\includegraphics[width=4.4in]{division-process-A.png}
 	\end{center}
-	\label{fig:division-process-A}
+	%\label{fig:division-process-A}
 \end{figure}
 
 For a first stab at modelling, it is probably sufficient to treat $\lambda(t)$ as exponential, i.e.\ perfectly stochastic, and $\gamma(t)$ as a $\delta$-distribution, i.e.\ perfectly synchronous.
@@ -55,9 +55,14 @@ At the moment, we have access to various data relating to sections in the transv
 
 TODO: PICTURE OF SLICE
 
-We made/are in process of making consistency checks to the effect that these two areas should not diverge too dramatically. We calculate the \textbf{cell depth} $b$ (as measured in the AP direction) by $$b_d = \frac{[AB]_d[DV]_d s_d}{p_d a_d}.$$
+We made/are in process of making consistency checks to the effect that these two areas should not diverge too dramatically. We calculate the \textbf{cell depth} $b$ (as measured in the AP direction) by $$b_d = \frac{[AB]_d[DV]_d s_d}{p_d a_d}.$$ We should see a reasonably tight distribution:
 
-TODO: DISTRIBUTION OF $b_d(t)$
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=3in]{consistency-cell-depth-distribution.png}
+	\end{center}
+	%\label{fig:cell-depth-distribution}
+\end{figure}
 
 In flat mounts, i.e.\ in the AP/DV plane, it is possible to measure the \textbf{mitotic index} as the number of PH3+ cells per unit area $m_d$. If PH3 only stains for a period of time $\tau_\textrm{mitosis}$, we may calculate the division rate as $$\lambda_d = \frac{\rho_d}{\tau_\textrm{mitosis}}\frac{m_d s [DV]_d}{p_d},$$ where $\rho_d$ is the proportion of progenitor cells in domain $d$, e.g.\ from the preliminary data, $\rho_d \simeq 1$. In practice, we do not know $\tau_\textrm{mitosis}$, though it is should be a constant of time and space; however, it is conceivable that $\rho_d$ may change through changes in $\lambda$, $\gamma$, $r_1$ or $r_2$ (in fact, may be quite generally a functional on their values for all previous times). Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{30}{\minute}$:
 
