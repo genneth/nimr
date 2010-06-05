@@ -64,19 +64,18 @@ We made/are in process of making consistency checks to the effect that these two
 	%\label{fig:cell-depth-distribution}
 \end{figure}
 
-In flat mounts, i.e.\ in the AP/DV plane, it is possible to measure the \textbf{mitotic index} as the number of PH3+ cells per unit area $m_d$. If PH3 only stains for a period of time $\tau_\textrm{mitosis}$, we may calculate the division rate as $$\lambda_d = \frac{\rho_d}{\tau_\textrm{mitosis}}\frac{m_d s [DV]_d}{p_d},$$ where $\rho_d$ is the proportion of progenitor cells in domain $d$, e.g.\ from the preliminary data, $\rho_d \simeq 1$. In practice, we do not know $\tau_\textrm{mitosis}$, though it is should be a constant of time and space; however, it is conceivable that $\rho_d$ may change through changes in $\lambda$, $\gamma$, $r_1$ or $r_2$ (in fact, may be quite generally a functional on their values for all previous times). Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{30}{\minute}$:
+In flat mounts, i.e.\ in the AP/DV plane, it is possible to measure the \textbf{mitotic index} as the number of PH3+ cells per unit area $m_d$. If PH3 only stains for a period of time $\tau_\textrm{mitosis}$, we may calculate the division rate as $$\lambda_d = \frac{\rho_d}{\tau_\textrm{mitosis}}\frac{m_d s [DV]_d}{p_d},$$ where $\rho_d$ is the proportion of progenitor cells in domain $d$, e.g.\ from the preliminary data, $\rho_d \simeq 1$. In practice, we do not know $\tau_\textrm{mitosis}$, though it is should be a constant of time and space; however, it is conceivable that $\rho_d$ may change through changes in $\lambda$, $\gamma$, $r_1$ or $r_2$ (in fact, may be quite generally a functional on their values for all previous times). From the data so far, we can see the change in $\lambda_d \tau_\textrm{mitosis} / \rho_d$:
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=4in]{consistency-mitotic-index.png}
 	\end{center}
 	%\label{fig:mitotic-index}
-	\caption{TODO: intermediate and Pax7 progenitor counts are inaccurate; better numbers are being pursued; error bars}
 \end{figure}
 
 
 Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{15}{\minute}$ and $\rho_d = 1$ we find that a cell division time $1/\lambda_d \simeq \SI{25}{\hour}$, at least before $t \le \SI{75}{\hour}$. There is, however, a definite drop afterwards. Could this be due to a changing $\rho_d$?
 
-To come: theoretical growth rates and clonal fate analysis.
+To come: corrected progenitor counts; theoretical growth rates and clonal fate analysis.
 
 \end{document}
