@@ -27,7 +27,7 @@
 
 \maketitle
 
-Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer. Note that there is no clear physiologically defined boundary between the progenitor domains and the mature neurons, e.g. such as the stratified layers in epidermis/oesophagus or a separating membrane. Although there is a slight morphological difference in that progenitors are elongated and post-mitotic cells are more round, having detached from the apical end, the main differentiator is the progenitor marker []; there is also the mature neuron marker [], but it takes some time to build up, and it is found to not be particularly tight; as such, we use the [progenitor marker] as ground truth.
+Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer. Note that there is no clear physiologically defined boundary between the progenitor domains and the mature neurons, e.g. such as the stratified layers in epidermis/oesophagus or a separating membrane. Although there is a slight morphological difference in that progenitors are elongated and post-mitotic cells are more round, having detached from the apical end, the main differentiator is the progenitor marker Sox2; there is also the mature neuron marker p27, but its build up is delayed with respect to the down regulation of Sox2, and so can under-report; as such, we use Sox2 as ground truth.
 
 \begin{figure}[h]
 	\begin{center}
@@ -36,7 +36,7 @@ Spinal cord forms a pseudo-stratified tissue in which cells are organised in dom
 	%\label{fig:anatomy}
 \end{figure}
 
-In 24 hour EdU incorporation studies, it is observed that the entire progenitor domain is EdU+, as well as some mature neurons. From the number of neurons produced which are EdU- we can infer the number of post-mitotic cells in the progenitor domains at the start of the 24 hour period. A rough count of a Pax7 domain showed that around 30 mature neurons are produced during this period, of which 10 are EdU-; there are around 200 progenitors in the domain to begin with, thus only around $5\%$ of the cells are post-mitotic. However, it is observed that $100\%$ of cells in the progenitor domains express [progenitor marker], implying that the [progenitor marker] has a moderate decay period. Further, it is observed (based only on two observations) that post-mitosis migration takes around 7 hours, with very little variance; it is also thought that division rates are around 20--30 hours. This is sufficiently long that for accurate statistics, the time spent migrating should not be ignored.
+In 24 hour EdU incorporation studies, it is observed that the entire progenitor domain is EdU+, as well as some mature neurons. From the number of neurons produced which are EdU- we can infer the number of post-mitotic cells in the progenitor domains at the start of the 24 hour period. A rough count of a Pax7 domain showed that around 30 mature neurons are produced during this period, of which 10 are EdU-; there are around 200 progenitors in the domain to begin with, thus only around $5\%$ of the cells are post-mitotic. However, it is observed that $100\%$ of cells in the progenitor domains express Sox2, implying that it has a moderate decay period. Further, it is observed (based only on two observations) that post-mitosis migration takes around 7 hours, with very little variance; it is also thought that division rates are around 20--30 hours. This is sufficiently long that for accurate statistics, the time spent migrating should not be ignored.
 
 As such, the following model is proposed:
 
@@ -53,7 +53,12 @@ Notice that if it is the case that the daughters of a progenitor independently m
 
 At the moment, we have access to various data relating to sections in the transverse (AB/DV) plane, which are around $s = \SI{6}{\micro\metre}$ in thickness. From these sections, it is possible to measure the \textbf{cell density per unit area} $1/a_d$ in the progenitor domains, and the \textbf{number of progenitors and neurons}, $p_d$ and $n_d$, respectively. The domains are also roughly rectangular, and to a certain extent we can assign some \textbf{absolute dimensions} $[DV]_d$ and $[AB]_d$; however, the actual area of the progenitor domains are more accurately measured by $p a$, as opposed to $[DV][AB]$. The absolute dimensions will have more direct impact on signalling.
 
-TODO: PICTURE OF SLICE
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[height=3in]{transverse-stained-sox2-p27.pdf}\includegraphics[height=3in]{transverse-stained-domains.pdf}
+	\end{center}
+	%\label{fig:stained-samples}
+\end{figure}
 
 We made/are in process of making consistency checks to the effect that these two areas should not diverge too dramatically. We calculate the \textbf{cell depth} $b$ (as measured in the AP direction) by $$b_d = \frac{[AB]_d[DV]_d s_d}{p_d a_d}.$$ We should see a reasonably tight distribution:
 
