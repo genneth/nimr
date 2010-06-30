@@ -1,10 +1,11 @@
 > {-# LANGUAGE TypeFamilies, EmptyDataDecls, ViewPatterns, FlexibleContexts #-}
 
 > module MC0DFramework (
->   DivisionProcess, CellType, timeToLive, progeny, cellType,
->   Queue, viewQ, addCells, initialCell, allDead, nextTime,
->   runPopulation, histogram,
->   while, evalRandStateIO) where
+>   DivisionProcess, CellType, MeanFields, timeToLive, progeny, cellType,
+>   evalMeanFields,
+>   Queue, viewQ, addCells, emptyCulture, initialCell, allDead, nextTime,
+>   PopulationState, stepPopulation, runPopulation, histogram, count,
+>   while, evalRandStateIO, exponentialVariable) where
 
 > import Control.Monad.Random
 > import Control.Monad.State.Strict
@@ -29,24 +30,24 @@ and a generic framework to handle the potential ensuing mess:
 
 > class DivisionProcess dp where
 >   data CellType dp
->   timeToLive :: CellType dp -> Double -- ttl should not depend on parameters in dp
->   progeny    :: MonadRandom m => dp -> CellType dp -> m [CellType dp]
+>   data MeanFields dp
+>   timeToLive :: CellType dp -> Double -- ttl should not depend on parameters
+>   progeny    :: MonadRandom m => dp -> MeanFields dp -> CellType dp 
+>                                     -> m [CellType dp]
 >   cellType   :: CellType dp -> Int -- for histogram purposes
+>   evalMeanFields :: PopulationState dp -> MeanFields dp
 
-The structure above should enforce the independence of cells. It is possible 
-that we should allow mean-field interactions as well, and have structures:
+The structure above should enforce the independence of cells. PopulationState
+already contains a copy of dp; see later.
 
-    data MeanFields dp
-    progeny :: RandomGen g => dp -> MeanFields dp -> CellType dp -> Rand g [CellType dp]
-
-For our example two type mark
-ov process, we should then have:
+For our example two type markov process, we should then have:
 
 > instance DivisionProcess TwoTypeMarkov where
 >   data CellType TwoTypeMarkov = A Double | B Double deriving Show
+>   data MeanFields TwoTypeMarkov = TTM -- empty
 >   timeToLive (A ttl) = ttl
 >   timeToLive (B ttl) = ttl
->   progeny (TwoTypeMarkov gamma r) (A _) = do
+>   progeny (TwoTypeMarkov gamma r) _ (A _) = do
 >       fate <- getRandomR (0.0, 1.0)
 >       if fate < r
 >         then pair cA cA
@@ -61,10 +62,11 @@ ov process, we should then have:
 >         b <- c2
 >         return [a, b]
 >
->   progeny _ (B _) = return []
+>   progeny _ _ (B _) = return []
 >
 >   cellType (A _) = 0
 >   cellType (B _) = 1
+>   evalMeanFields _ = TTM
 
 where:
 
@@ -82,7 +84,9 @@ sorted by death time.
 > viewQ (minViewWithKey -> Nothing) = Nothing
 > viewQ (minViewWithKey -> Just ((t, c:[]), q)) = Just ((t, c), q)
 > viewQ (minViewWithKey -> Just ((t, c:cs), q)) = Just ((t, c), insert t cs q)
-> addCells q0 offset cs = foldr (\c q -> insertWith (++) (offset + (timeToLive c)) [c] q) q0 cs
+> addCells q0 offset cs = 
+>   foldr (\c q -> insertWith (++) (offset + (timeToLive c)) [c] q) q0 cs
+> emptyCulture = M.empty
 > initialCell c = singleton 0.0 [c]
 > allDead = M.null
 > nextTime q = t
@@ -99,7 +103,8 @@ Return False if we're out of cells afterwards.
 > stepPopulation = do
 >   (curr_time, process, cells) <- get
 >   let Just ((deathday, c), rest) = viewQ cells --- assertion: deathday >= curr_time
->   daughters <- progeny process c
+>       meanFields = evalMeanFields (curr_time, process, cells)
+>   daughters <- progeny process meanFields c
 >   let new_cells = addCells rest deathday daughters
 >   put (deathday, process, new_cells)
 
@@ -116,6 +121,9 @@ different types of cells:
 
 > histogram :: DivisionProcess dp => Queue dp -> [(Int, Int)]
 > histogram = map (head &&& length) . L.group . L.sort . map cellType . concat . M.elems
+
+> count :: DivisionProcess dp => Int -> Queue dp -> Int
+> count t = length . filter (==t) . map cellType . concat . M.elems
 
 Generic helpers: 
 
