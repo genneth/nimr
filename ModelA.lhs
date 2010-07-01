@@ -1,13 +1,18 @@
 > {-# LANGUAGE NoMonomorphismRestriction, TypeFamilies, ScopedTypeVariables, FlexibleContexts #-}
 
 > import MC0DFramework
-> import Data.Number.Erf
 > import Control.Monad.Random
 > import Control.Monad.State.Strict
 > import Control.Monad.Writer
 > import Control.Monad
 
-> import Graphics.Rendering.Chart.Simple
+> import Graphics.Rendering.Chart 
+> import Graphics.Rendering.Chart.Gtk
+> import Data.Accessor
+> import Data.Colour
+> import Data.Colour.SRGB
+
+import Graphics.Rendering.Chart.Simple
 
 Let's try some models for development. First up, a simple model which has goes
 through two phases:
@@ -80,7 +85,7 @@ domain. Let us assume that they are in fact all progenitors.
 
 > initial_condition :: (MonadRandom m) => m (Queue ModelA)
 > initial_condition = do
->   ttls <- replicateM 34 cycleTime
+>   ttls <- replicateM 340 cycleTime
 >   let cells = map Progenitor ttls
 >   return $ addCells emptyCulture 57.5 cells
 
@@ -106,5 +111,29 @@ domain. Let us assume that they are in fact all progenitors.
 >       ds = map fromIntegral ds' :: [Double]
 >       ns = zipWith (+) ps ds
 >       ms = zipWith (/) ps ns
->   plotWindow ts ns "o" "points"
->   plotWindow ts ms "+" "points"
+>       count_plot = layout1_plots ^= 
+>                [Left (toPlot (plot_fillbetween_title ^= "progenitors"
+>                             $ plot_fillbetween_style ^= solidFillStyle (sRGB 0.5 1 0.5 `withOpacity` 0.9)
+>                             $ plot_fillbetween_values ^= zip ts (zip (repeat 0) ps)
+>                             $ defaultPlotFillBetween)),
+>                 Left (toPlot (plot_fillbetween_title ^= "differentiated"
+>                             $ plot_fillbetween_style ^= solidFillStyle (sRGB 0.5 0.5 1 `withOpacity` 0.9)
+>                             $ plot_fillbetween_values ^= zip ts (zip ps ns)
+>                             $ defaultPlotFillBetween))]
+>            $ layout1_bottom_axis ^: laxis_title ^= "time (hours)"
+>            $ layout1_left_axis   ^: laxis_title ^= "number of cells (× 10)"
+>            $ defaultLayout1
+>   renderableToWindow (toRenderable count_plot) 640 480
+>   renderableToPDFFile (toRenderable count_plot) (8*72) (6*72) "ModelA-cell-counts.pdf"
+>   let mitotic_index_plot = 
+>           layout1_plots ^=
+>             [Left (toPlot (plot_points_style ^= plusses 2.0 1.0 (sRGB 0.5 1 0.5 `withOpacity` 0.9)
+>                          $ plot_points_values ^= zip ts ms
+>                          $ defaultPlotPoints))]
+>         $ layout1_bottom_axis ^: laxis_title ^= "time (hours)"
+>         $ layout1_left_axis   ^: laxis_title ^= "proportion of real progenitors"
+>         $ defaultLayout1
+>   renderableToWindow (toRenderable mitotic_index_plot) 640 480
+>   renderableToPDFFile (toRenderable mitotic_index_plot) (8*72) (6*72) "ModelA-rho.pdf"
+
+
