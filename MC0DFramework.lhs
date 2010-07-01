@@ -4,11 +4,13 @@
 >   DivisionProcess, CellType, MeanFields, timeToLive, progeny, cellType,
 >   evalMeanFields,
 >   Queue, viewQ, addCells, emptyCulture, initialCell, allDead, nextTime,
->   PopulationState, stepPopulation, runPopulation, histogram, count,
+>   PopulationState, stepPopulation, runPopulation, runPopulationWithRecording,
+>   histogram, count,
 >   while, evalRandStateIO, exponentialVariable) where
 
 > import Control.Monad.Random
 > import Control.Monad.State.Strict
+> import Control.Monad.Writer
 > import Data.Map (Map, minViewWithKey, insert, insertWith, singleton)
 > import qualified Data.Map as M
 > import qualified Data.List as L
@@ -111,6 +113,19 @@ Return False if we're out of cells afterwards.
 > runPopulation :: (DivisionProcess dp, MonadState (PopulationState dp) m, MonadRandom m) => Double -> m (Double, Queue dp)
 > runPopulation max_time = do
 >     while good stepPopulation
+>     (t, _, cells) <- get
+>     return $ (t, cells)
+>   where good = do (_,_,cells) <- get
+>                   return $ (not (allDead cells)) && ((nextTime cells) < max_time)
+
+> runPopulationWithRecording :: (DivisionProcess dp, MonadState (PopulationState dp) m, MonadRandom m, Monoid w) => Double -> WriterT w m () -> m (Double, Queue dp, w)
+> runPopulationWithRecording max_time recorder = do
+>   ((final_time, final_cells), log) <- runWriterT (runPopulationWithRecording' max_time recorder)
+>   return $ (final_time, final_cells, log)
+
+> runPopulationWithRecording' :: (DivisionProcess dp, MonadState (PopulationState dp) m, MonadRandom m, Monoid w, MonadWriter w m) => Double -> m () -> m (Double, Queue dp)
+> runPopulationWithRecording' max_time recorder = do
+>     while good (stepPopulation >> recorder)
 >     (t, _, cells) <- get
 >     return $ (t, cells)
 >   where good = do (_,_,cells) <- get

@@ -2,8 +2,8 @@
 
 > import MC0DFramework
 > import Control.Monad.Random
-> import Control.Monad.State.Strict
-> import Control.Monad.Writer
+> import Control.Monad.State.Strict (get, put)
+> import Control.Monad.Writer (tell)
 > import Control.Monad
 
 > import Graphics.Rendering.Chart 
@@ -89,20 +89,12 @@ domain. Let us assume that they are in fact all progenitors.
 >   let cells = map Progenitor ttls
 >   return $ addCells emptyCulture 57.5 cells
 
-> simulation' :: (MonadState (PopulationState ModelA) m, MonadRandom m, MonadWriter [(Double, Int, Int)] m) => m ()
-> simulation' = do
->     st <- initial_condition
->     put (57.5, ModelA, st)
->     while good $ do
->       stepPopulation
->       (time, _, cells) <- get
->       tell [(time, countProgenitors cells, countDifferentiated cells)]
->   where good = do (_,_,cells) <- get
->                   return $ (not (allDead cells)) && ((nextTime cells) < 100)
->         countProgenitors    = count 0
->         countDifferentiated = count 1
-
-> simulation = execWriterT simulation'
+> simulation = do
+>   st <- initial_condition
+>   (_,_,hist) <- runPopulationWithRecording 100 $ do
+>     (time, _, cells) <- get
+>     tell [(time, count 0 cells, count 1 cells)]
+>   return $ hist
 
 > main = do
 >   hist <- evalRandStateIO simulation (0, ModelA, emptyCulture)
