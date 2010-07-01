@@ -127,9 +127,9 @@ domain. Let us assume that they are in fact all progenitors.
 >   renderableToPDFFile (toRenderable count_plot) (8*72) (6*72) "ModelA-cell-counts.pdf"
 >   let mitotic_index_plot = 
 >           layout1_plots ^=
->             [Left (toPlot (plot_points_style ^= plusses 2.0 1.0 (sRGB 0.5 1 0.5 `withOpacity` 0.9)
->                          $ plot_points_values ^= zip ts ms
->                          $ defaultPlotPoints))]
+>             [Left (toPlot (plot_lines_style ^= solidLine 1.0 (sRGB 0.5 1 0.5 `withOpacity` 0.9)
+>                          $ plot_lines_values ^= [zip ts ms]
+>                          $ defaultPlotLines))]
 >         $ layout1_bottom_axis ^: laxis_title ^= "time (hours)"
 >         $ layout1_left_axis   ^: laxis_title ^= "proportion of real progenitors"
 >         $ defaultLayout1
