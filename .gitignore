@@ -1,1 +1,2 @@
-MC0DFramework.hi ModelA.hi MC0DFramework.o ModelA.o
+*.hi
+*.o
