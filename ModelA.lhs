@@ -91,6 +91,7 @@ domain. Let us assume that they are in fact all progenitors.
 
 > simulation = do
 >   st <- initial_condition
+>   put (57.5, ModelA, st)
 >   (_,_,hist) <- runPopulationWithRecording 100 $ do
 >     (time, _, cells) <- get
 >     tell [(time, count 0 cells, count 1 cells)]
