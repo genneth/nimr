@@ -15,7 +15,7 @@
  breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
  {hyperref}
 
-\usepackage{fouriernc}
+\usepackage{mathpazo}
 \usepackage{siunitx}
 \usepackage{microtype}
 \usepackage{nicefrac}
@@ -27,60 +27,208 @@
 
 \maketitle
 
-Spinal cord forms a pseudo-stratified tissue in which cells are organised in domains which lie parallel along the anterior-posterior (AP) axis. The width of the domains along the dorsal-ventral (DV) axis changes through development, as does the thickness along the apical-basal (AB) axis. The cells move to the apical surface during mitosis, and then move back. Fully differentiated neurons migrate out of the pseudo-stratified layer. Note that there is no clear physiologically defined boundary between the progenitor domains and the mature neurons, e.g. such as the stratified layers in epidermis/oesophagus or a separating membrane. Although there is a slight morphological difference in that progenitors are elongated and post-mitotic cells are more round, having detached from the apical end, the main differentiator is the progenitor marker Sox2; there is also the mature neuron marker p27, but its build up is delayed with respect to the down regulation of Sox2, and so can under-report; as such, we use Sox2 as ground truth.
+\section{Tissue organisation}
+
+During development, the spinal chord grows from the anterior towards the
+posterior. At the same time, somites develop parallel to the neural tube.
+Observations indicate that labelled cells in the spinal chord and somites
+remain parallel as development proceeds. It seems reasonable to believe that 
+the posterior end lays down tissue as it moves. Nevertheless, there is
+considerable growth of the somites, and so there should still be considerable
+growth even away from the posterior end. The protocol is thus to take transverse slices at the same somite number and track as development proceeds.
+
+The spinal chord itself forms a pseudo-stratified tissue, in which cells migrate
+to the apical surface when they undergo mitosis. We may at least divide cells
+into two types: progenitors and mature neurons. These may be defined in three
+ways:
+
+\begin{enumerate}
+\item lineage --- progenitors will divide again, mature neurons do not;
+\item morphology --- progenitors are less round, more elongated;
+\item labelling --- progenitors are sox2 (?) positive; mature neurons are p27
+	positive.
+\end{enumerate}
+
+We shall ignore morphology from now on because it is too qualitative, and do not
+provide a sufficiently precise definition. It is important to note that these do 
+not necessarily correspond to the same definitions; further, this is not an
+academic question because our experimental data will use both, and we need to be
+clear about which one is being used to explain what we see.
+
+From here on, the word \emph{progenitor} will refer to cells capable of division,
+and those defined by labelling will be referred to as \emph{sox2 +ve} or 
+\emph{sox2 -ve} (p27 is not as tight a marker (?)). 
+
+It is observed (?) that division only occurs for cells displaying sox2; or
+rather that sox2 -ve cells are definitely \emph{not} capable of division. We can 
+then postulate the existence of cells committed to differentiation but still
+sox2 +ve, i.e. post-mitotic cell. Thus overall, we are talking about the 
+division process:
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=4in]{spinal-chord-anatomy.png}
+		\includegraphics[width=4in]{division-process-A.pdf}
 	\end{center}
-	%\label{fig:anatomy}
 \end{figure}
 
-In 24 hour EdU incorporation studies, it is observed that the entire progenitor domain is EdU+, as well as some mature neurons. From the number of neurons produced which are EdU- we can infer the number of post-mitotic cells in the progenitor domains at the start of the 24 hour period. A rough count of a Pax7 domain showed that around 30 mature neurons are produced during this period, of which 10 are EdU-; there are around 200 progenitors in the domain to begin with, thus only around $5\%$ of the cells are post-mitotic. However, it is observed that $100\%$ of cells in the progenitor domains express Sox2, implying that it has a moderate decay period. Further, it is observed (based only on two observations) that post-mitosis migration takes around 7 hours, with very little variance; it is also thought that division rates are around 20--30 hours. This is sufficiently long that for accurate statistics, the time spent migrating should not be ignored.
+Note that the parameters marked above refer to averages, and also may depend
+on time, fate, siblings, etc.
 
-As such, the following model is proposed:
+\paragraph{Caveat 1}
+
+Everything depends on cell fate being determined at division. This specifically
+rules out a process where a progenitor can chose to simply differentiate without
+division, e.g. a progenitor will no longer divide if it has not in the first 50
+hours of its life, and will then just differentiate. I'm aware that such a
+scenario is popular in the neurogenisis field, and maybe I need to be educated.
+In any case, see below, section ``Model B''.
+
+Through the use of other markers (?) it is possible to distinguish four types
+of differentiated cells. Further, sox2 +ve cells also display these markers.
+These different types of cells exist in spatially separate domains arranged
+along the dorso-ventral axis.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=4.4in]{division-process-A.png}
+		\includegraphics[height=2.5in]{transverse-stained-domains.pdf}
+		\includegraphics[height=2.5in]{transverse-stained-sox2-p27.pdf}
 	\end{center}
-	%\label{fig:division-process-A}
 \end{figure}
 
-For a first stab at modelling, it is probably sufficient to treat $\lambda(t)$ as exponential, i.e.\ perfectly stochastic, and $\gamma(t)$ as a $\delta$-distribution, i.e.\ perfectly synchronous.
+It is thought that these markers are set up as a result of a hedgehog gradient (?)
+and may be influential in regulating the growth.
 
-Notice that if it is the case that the daughters of a progenitor independently make a decision about differentiation, then we expect the relation: $\sqrt{r_2 (t)} = 1 - \sqrt{r_1(t)}$.
+\section{Cell cycle and fate choice is independent of fate}
 
-At the moment, we have access to various data relating to sections in the transverse (AB/DV) plane, which are around $s = \SI{6}{\micro\metre}$ in thickness. From these sections, it is possible to measure the \textbf{cell density per unit area} $1/a_d$ in the progenitor domains, and the \textbf{number of progenitors and neurons}, $p_d$ and $n_d$, respectively. The domains are also roughly rectangular, and to a certain extent we can assign some \textbf{absolute dimensions} $[DV]_d$ and $[AB]_d$; however, the actual area of the progenitor domains are more accurately measured by $p a$, as opposed to $[DV][AB]$. The absolute dimensions will have more direct impact on signalling.
+We can try and spot cells undergoing mitosis with PH3 staining of flat mounts.
+This gives us a measure in terms of number of cells undergoing mitosis (in the
+sense of being PH3 +ve) per unit area, $m^\textrm{PH3}$. We may also count the
+number of sox2 +ve cells per unit area in transverse sections (in the apical-
+basal/dorvo-ventral plane), $p^\textrm{sox2}$; the sections are of thickness $s$. 
+We must then have the identity
+$$ \frac{\tau^\textrm{ph3}_\textrm{mit.}}{\tau_\textrm{cycle}} = 
+	\frac{s[DV][AB]}{\rho p^\textrm{sox2}} \frac{m^\textrm{PH3}}{[AB]} $$
+where $[DV]$ is the physical dimension of the domain in the dorso-ventral axis,
+$[AB]$ is the dimension in the apico-basal axis, and $\rho$ is the proportion of 
+sox2 +ve cells which are progenitors.
+
+\paragraph{Caveat 2}
+
+There is a rather subtle issue of whether the volume density of sox2 +ve cells
+is given by $p^\textrm{sox2}/s[DV][AB]$. Clearly, for a large $s$ (section thickness
+much larger than cell dimension), this is correct --- doubling the thickness
+will double the number of cells per section. However, for infinitesimal slices, 
+doubling the thickness will give exactly the same number of cells. Annoyingly,
+the cross over will occur when the section thickness is about the same as cell
+dimension. To resolve this I need to understand in greater detail what the
+protocol is for counting cells in each section.
+
+Everything on the right-hand side, apart from $\rho$, can be measured. We can
+then calculate and plot the quantity $\rho \tau^\textrm{ph3}_\textrm{mit.}/\tau_\textrm{cycle}$
+for each domain as a function of time:
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[height=3in]{transverse-stained-sox2-p27.pdf}\includegraphics[height=3in]{transverse-stained-domains.pdf}
+		\includegraphics[width=3in]{rhoph3taus.eps}
 	\end{center}
-	%\label{fig:stained-samples}
 \end{figure}
 
-We made/are in process of making consistency checks to the effect that these two areas should not diverge too dramatically. We calculate the \textbf{cell depth} $b$ (as measured in the AP direction) by $$b_d = \frac{[AB]_d[DV]_d s_d}{p_d a_d}.$$ We should see a reasonably tight distribution:
+Furthermore, it is also possible to make another measure of mitosis by directly
+spotting cells undergoing mitosis from transverse slices; this gives a 
+proportion $m$, and is equal to $\rho \tau_\textrm{mit.}/\tau_\textrm{cycle}$.
+Note that $\tau_\textrm{mit.} \neq \tau^\textrm{ph3}_\textrm{mit.}$. Plotting
+this again for the different domains as a function of time:
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=3in]{consistency-cell-depth-distribution.png}
+		\includegraphics[width=3in]{rhotaus.eps}
 	\end{center}
-	%\label{fig:cell-depth-distribution}
 \end{figure}
 
-In flat mounts, i.e.\ in the AP/DV plane, it is possible to measure the \textbf{mitotic index} as the number of PH3+ cells per unit area $m_d$. If PH3 only stains for a period of time $\tau_\textrm{mitosis}$, we may calculate the division rate as $$\lambda_d = \frac{\rho_d}{\tau_\textrm{mitosis}}\frac{m_d s [DV]_d}{p_d},$$ where $\rho_d$ is the proportion of progenitor cells in domain $d$, e.g.\ from the preliminary data, $\rho_d \simeq 1$. In practice, we do not know $\tau_\textrm{mitosis}$, though it is should be a constant of time and space; however, it is conceivable that $\rho_d$ may change through changes in $\lambda$, $\gamma$, $r_1$ or $r_2$ (in fact, may be quite generally a functional on their values for all previous times). From the data so far, we can see the change in $\lambda_d \tau_\textrm{mitosis} / \rho_d$:
+The main result is that all domains behave the same. There is also a drop of a 
+factor of a few over the time course. The quantitative difference between the
+two measurements can be understood to be a result of different definitions of
+mitosis.
+
+Given that the sox2 +ve cells display the differentiation type markers, it
+might be thought that the division process could be dependent on the type of
+marker. However, the results from direct mitotic index measurements suggest that actually cell division is independent of which domain the progenitors reside in.
+
+The drop in the combined quantity, $\rho \tau_\textrm{mit.} / \tau_\textrm{cycle}$,
+is significant. We can assume that mitosis duration is constant. We thus need
+to reconcile the difference (2--10 fold) in changes to $\rho$ and/or
+$\tau_\textrm{cycle}$. \emph{Is this reasonable?}
+
+There is now an intriguing possibility. We have strong(-ish) evidence that the
+differentiation marker does not seem to effect the division rate/process in
+general. If we accept that a differentiated cell (p27 +ve) has its fate 
+determined already by the differentiate type marker it expresses, we can still ask
+if the progenitors are destined to produce only cells of one type.
+
+We can test this decoupling further by considering the relative growth of each 
+domain. If the domains were independent, then the total number of cells, both 
+sox2 +ve and -ve, as a proportion of the final total number of cells, should 
+grow in the same way independently of domain:
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=4in]{consistency-mitotic-index.png}
+		\includegraphics[width=3in]{growth-fraction.eps}
 	\end{center}
-	%\label{fig:mitotic-index}
 \end{figure}
 
+\paragraph{Comment}
 
-Assuming a PH3 staining time $\tau_\textrm{mitosis} = \SI{15}{\minute}$ and $\rho_d = 1$ we find that a cell division time $1/\lambda_d \simeq \SI{25}{\hour}$, at least before $t \le \SI{75}{\hour}$. There is, however, a definite drop afterwards. Could this be due to a changing $\rho_d$?
+Here I've actually cheated and and adjusted the scale for each line by hand.
+Things look even worse if I just naively scale by the final count. The important
+thing is that \emph{sometimes the count goes down}. Admittedly, things are
+always within error bars (though intermediate at around 55 hours seems to 
+\emph{really} decrease). (Why are the errorbars so large? Most of the error is
+coming from neuron counts. Is that trying to tell us something?)
 
-To come: corrected progenitor counts; theoretical growth rates and clonal fate analysis.
+Currently, it looks like the independence hypothesis is not correct, implying
+that progenitors can switch their differentiation type marker. (Are we sure
+that p27+ cells are not able to change too?) An excellent experimental signature
+would be to see clones of progenitors displaying heterogenous differentiation
+type markers.
+
+\section{Accuracy}
+
+Currently, the error bars associated with some of the measurements are rather
+large. From the battery of measurements available, we can construct a consistency
+check in the form of ``progenitor cell depth''. This quantity should simply be
+roughly the dimension of a sox2 +ve cell measured in the anterior-posterior axis.
+We expect, from observations, that this should be a tightly distributed quantity,
+independent of both space and time variations. Since this quantity depends
+on both number counts and size measurements, it is a good indicator of accuracy:
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=2.8in]{cell-depth.eps}
+		\hfill
+		\includegraphics[width=2.8in]{cell-depth-hist.eps}
+	\end{center}
+\end{figure}
+
+For example, we see that there is a correlated spike at $\sim 58$ hours, and an
+outlier in p3 at $70$ hours. Unfortunately, I have not worked out what exactly
+caused them.
+
+\section{Model B}
+
+There is an interesting limit of the division process, which considerably
+simplifies things. When transit time of sox2 +ve post-mitotic cells is very
+short, we can simply ignore their existence. This is equivalent to setting
+$\rho = 1$. Further, if the decision to differentiate is actually taken after
+division, then we have the property that $r_2 = \left(1 - \sqrt{r_1} \right)^2$. 
+In this case, the process is equivalent to:
+
+\begin{align*}
+P &\overset{\lambda}{\longrightarrow} P+P \\
+P &\overset{\gamma}{\longrightarrow} N
+\end{align*}
+
+However, in view of measurements of mitotic index, it would mean that all the
+change in $\rho \tau_\textrm{mit.} / \tau_\textrm{cycle}$ needs to be taken up
+by change in $\tau_\textrm{cycle}$. Is a five-fold change reasonable?
 
 \end{document}
