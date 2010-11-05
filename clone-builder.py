@@ -143,9 +143,9 @@ class DrawingAreaExample:
             yext = max([y for (x,y) in group]) - min([y for (x,y) in group])
             print "\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f" % (len(group), xmean, ymean, covxx, covxy, covyy, xext, yext),
             for c in group:
-                print "\t(%d,%d)" % (c[0],c[1]),
+                print "\t%d,%d" % (c[0],c[1]),
             print ""
-            print ""
+        print ""
         #sys.exit(0)
     
     def group(self, threshold):
